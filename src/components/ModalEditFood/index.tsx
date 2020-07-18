@@ -47,6 +47,7 @@ const ModalEditFood: React.FC<IModalProps> = ({
       handleUpdateFood(data);
       setIsOpen();
     },
+
     [handleUpdateFood, setIsOpen],
   );
 

@@ -51,17 +51,31 @@ const Dashboard: React.FC = () => {
   async function handleUpdateFood(
     food: Omit<IFoodPlate, 'id' | 'available'>,
   ): Promise<void> {
-    console.log(food);
+    try {
+      const response = await api.put(`/foods/${editingFood.id}`, {
+        ...food,
+        available: editingFood.available,
+      });
+
+      setFoods(
+        foods.map(currentFood => {
+          if (currentFood.id === editingFood.id) {
+            return response.data;
+          }
+          return currentFood;
+        }),
+      );
+
+      setEditModalOpen(false);
+      setEditingFood({} as IFoodPlate);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async function handleDeleteFood(id: number): Promise<void> {
     await api.delete(`foods/${id}`);
-
-    const index = foods.findIndex(food => food.id === id);
-    const newFoods = foods;
-    newFoods.splice(index, 1);
-
-    setFoods(newFoods);
+    setFoods(foods.filter(food => food.id !== id));
   }
 
   function toggleModal(): void {
